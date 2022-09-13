@@ -20,11 +20,11 @@ class SwishBlock(nn.Module):
     def forward(self, S, E, V):
 
         out = torch.cat([
-            S.unsqueeze(-1),
-            E.unsqueeze(-1),
-            V.unsqueeze(1).expand(-1, E.size(1), -1, -1),
+            S.unsqueeze(-1),  # B,T,K,1
+            E.unsqueeze(-1),  # B,T,K,1
+            V.unsqueeze(1).expand(-1, E.size(1), -1, -1),  # B,T,K,M
         ], dim=-1)
-        out = self.layer(out)
+        out = self.layer(out)  # B,T,K,M -> B,T,K,(dim_c or dim_w)
 
         return out
 
