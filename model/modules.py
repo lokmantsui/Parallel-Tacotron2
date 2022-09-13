@@ -298,7 +298,7 @@ class LearnedUpsampling(nn.Module):
         dropout = config["learned_upsampling"]["conv_dropout"]  # 0.
         conv_output_size = config["learned_upsampling"]["conv_output_size"]  # 8
         dim_w = config["learned_upsampling"]["linear_output_size_w"]  # 16
-        dim_c = config["learned_upsampling"]["linear_output_size_c"]  # 2
+        dim_c = config["learned_upsampling"]["linear_output_size_c"]  # P=2
 
         self.max_seq_len = config["max_seq_len"]
 
