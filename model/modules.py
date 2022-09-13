@@ -285,7 +285,7 @@ class DurationPredictor(nn.Module):
             duration = duration.masked_fill(mask.unsqueeze(-1), 0)
         duration = duration.squeeze(-1)
 
-        return duration, V
+        return duration, V  # duration: (B,K) V: (B,K,M=d_predictor)
 
 
 class LearnedUpsampling(nn.Module):
@@ -293,12 +293,12 @@ class LearnedUpsampling(nn.Module):
 
     def __init__(self, config):
         super(LearnedUpsampling, self).__init__()
-        d_predictor = config["duration_predictor"]["predictor_hidden"]
-        kernel_size = config["learned_upsampling"]["conv_kernel_size"]
-        dropout = config["learned_upsampling"]["conv_dropout"]
-        conv_output_size = config["learned_upsampling"]["conv_output_size"]
-        dim_w = config["learned_upsampling"]["linear_output_size_w"]
-        dim_c = config["learned_upsampling"]["linear_output_size_c"]
+        d_predictor = config["duration_predictor"]["predictor_hidden"]  # 256
+        kernel_size = config["learned_upsampling"]["conv_kernel_size"]  # 3
+        dropout = config["learned_upsampling"]["conv_dropout"]  # 0.
+        conv_output_size = config["learned_upsampling"]["conv_output_size"]  # 8
+        dim_w = config["learned_upsampling"]["linear_output_size_w"]  # 16
+        dim_c = config["learned_upsampling"]["linear_output_size_c"]  # 2
 
         self.max_seq_len = config["max_seq_len"]
 
@@ -350,7 +350,7 @@ class LearnedUpsampling(nn.Module):
         t_arange = torch.arange(1, max_mel_len+1, device=device).unsqueeze(0).unsqueeze(-1).expand(
             batch_size, -1, max_src_len
         )
-        S, E = (t_arange - s_k).masked_fill(attn_mask, 0), (e_k - t_arange).masked_fill(attn_mask, 0)
+        S, E = (t_arange - s_k).masked_fill(attn_mask, 0), (e_k - t_arange).masked_fill(attn_mask, 0)  # (B,T,K)
 
         # Attention (W)
         W = self.swish_w(S, E, self.conv_w(V)) # [B, T, K, dim_w]
